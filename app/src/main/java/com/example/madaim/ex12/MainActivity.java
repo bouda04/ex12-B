@@ -2,6 +2,7 @@ package com.example.madaim.ex12;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Vibrator;
 import android.preference.PreferenceFragment;
@@ -32,6 +33,10 @@ public class MainActivity extends AppCompatActivity implements MyDialog.ResultsL
     SharedPreferences sp;
     VideoView explosion;
     Button btn;
+    String name;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +49,11 @@ public class MainActivity extends AppCompatActivity implements MyDialog.ResultsL
         this.btn = (Button)findViewById(R.id.button);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         counter = sp.getInt("numOfClicks", 10000);
+        name = sp.getString("userName", "Guest");
         tv.setText(Integer.toString(counter));
+
+
+
 
         final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
 
@@ -92,6 +101,13 @@ public class MainActivity extends AppCompatActivity implements MyDialog.ResultsL
 
     }
 
+
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(sp.getBoolean("rotation", false))
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        else
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+    }
     @Override
     protected void onPause() {
         SharedPreferences.Editor editor = sp.edit();
@@ -106,12 +122,13 @@ public class MainActivity extends AppCompatActivity implements MyDialog.ResultsL
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            //addPreferencesFromResource(R.id.number);
+            addPreferencesFromResource(R.xml.preferences);
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View view = super.onCreateView(inflater, container, savedInstanceState);
+            view.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
             return view;
         }
     }
@@ -129,6 +146,12 @@ public class MainActivity extends AppCompatActivity implements MyDialog.ResultsL
             case R.id.action_reset:
                 MyDialog.newInstance(MyDialog.RESET_DIALOG).show(getFragmentManager(), null);
                 return true;
+            case R.id.action_settings:
+                getFragmentManager().beginTransaction().add(android.R.id.content, new MyPreferences()).addToBackStack(null).commit();
+                return true;
+            case R.id.action_exit:
+                MyDialog.newInstance(MyDialog.EXIT_DIALOG).show(getFragmentManager(), null);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -141,7 +164,11 @@ public class MainActivity extends AppCompatActivity implements MyDialog.ResultsL
                 egg.setImageResource(R.mipmap.egg);
                 tv.setText(Integer.toString(counter));
                 break;
+            case MyDialog.EXIT_DIALOG:
+                finish();
+                return;
         }
     }
+
 
 }

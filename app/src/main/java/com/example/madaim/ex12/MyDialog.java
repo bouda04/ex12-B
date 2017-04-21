@@ -14,6 +14,7 @@ import android.os.Bundle;
 public class MyDialog extends DialogFragment {
     private int requestCode;
     public final static int RESET_DIALOG = 1;
+    public final static int EXIT_DIALOG = 2;
     private ResultsListener listener;
 
     public static MyDialog newInstance(int requestCode) {
@@ -24,9 +25,27 @@ public class MyDialog extends DialogFragment {
         return fragment;
     }
 
-    private AlertDialog.Builder buildExitDialog(){
+    private AlertDialog.Builder buildResetDialog(){
         return new AlertDialog.Builder(getActivity())
                 .setTitle("Reset")
+                .setMessage(R.string.reset)
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        listener.onFinishedDialog(requestCode, "ok");
+
+                    }
+                })
+                .setNegativeButton("no", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dismiss();
+                    }
+                });
+    }
+    private AlertDialog.Builder buildExitDialog(){
+        return new AlertDialog.Builder(getActivity())
+                .setTitle("Exit")
                 .setMessage(R.string.reset)
                 .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     @Override
@@ -47,7 +66,7 @@ public class MyDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         this.requestCode = getArguments().getInt("rc");
         if (requestCode == RESET_DIALOG) {
-            return buildExitDialog().create();
+            return buildResetDialog().create();
         }
         else
             return buildExitDialog().create();

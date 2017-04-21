@@ -6,7 +6,8 @@
         android:checkableBehavior="none">
 
         <item android:id="@+id/action_reset" android:title="reset"></item>
-
+        <item android:id="@+id/action_settings" android:title="settings"></item>
+        <item android:id="@+id/action_exit" android:title="exit"></item>
 
     </group>
 </menu>

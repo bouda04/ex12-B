@@ -2,4 +2,6 @@
     <string name="app_name">Ex12</string>
 
     <string name="reset">Are you sure?</string>
+    <string name="summary_name">%s</string>
+    <string name="rotationnBlock">block the rotaton</string>
 </resources>
